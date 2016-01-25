@@ -1,0 +1,51 @@
+#Key Value
+###keyvalue [-@ flags] [filename...]
+
+###Commands
+
+     #
+          Any input line whose first non-whitespace character is a
+          hash (#) is ignored as a comment.  This means that no key
+          can begin with a hash.  An empty line or a line consisting
+          of nothing but white space is ignored.
+
+     key
+          A line consisting of at least one non-whitespace character
+          and no equal sign causes the key and value pair to be
+          printed.  If not found, the message
+               key: key not found
+          is printed.  Note that the characters in italics are not
+          printed exactly.  The actual key is printed.  This message
+          is printed to cout.
+
+     key =
+          If there is only whitespace after the equal sign, the key
+          and value pair is deleted from the map.
+
+     key = value
+          If the key is found in the map, its value field is replaced
+          by the new value.  If not found, the key and value are
+          inserted in increasing lexicographic order, sorted by key.
+          The new key and value pair is printed.
+
+     =
+          All of the key and value pairs in the map are printed in
+          lexicographic order.
+
+     = value
+          All of the key and value pairs with the given value are
+          printed in lexicographic order sorted by key.
+
+###Files
+listmap.h
+listmap.tcc
+main.cpp
+Makefile
+trace.cpp
+trace.h
+util.cpp
+util.h
+util.tcc
+xless.h
+xpair.h
+
