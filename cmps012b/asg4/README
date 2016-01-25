@@ -1,0 +1,21 @@
+//Ryan Coley
+//12/8/14
+//rjcoley
+//1332490
+//asg4
+//README
+//lists all files submitted
+
+README
+Makefile
+demo.adventure
+design.txt
+cyoa.java
+auxlib.java
+Description.java
+Rooms.java
+Queue.java
+
+How to win
+The quickest way to win is a,b,a,a.
+The full game is b,b,b,b,a,b,b,a.

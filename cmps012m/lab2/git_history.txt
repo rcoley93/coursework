@@ -1,0 +1,8 @@
+* a17124e Greetings gets names from directory.txt and splits names from phone numbers
+* 59eca67 Made greetings.java that reads people from file and says hello
+* 965a7df Made Greet script run forever
+* cc1bde3 Basic greet 1 input
+* 1dfda56 Finalized makefile
+* 15515da Initial blank versions of java source files
+* 1b8f052 Add variables to makefile following lab1
+* 743d716 Initial commit of a blank makefile

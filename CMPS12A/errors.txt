@@ -1,0 +1,25 @@
+//-------------------------------
+// errors.txt
+// Ryan Coley
+// rjcoley
+// lab6
+// errors from LetterHome.class
+//-------------------------------
+
+1) Data Input: 5 2
+Description: When data input is first line in data file not period will print at end of sentence.
+
+2) Data Input: 4 (any negative number)
+Description: This program accepts negative numbers when asking for money.
+
+3) Data Input: 3 3
+Description: There is a grammer error present. Sentence comes out as "last weekend" instead of "next weekend."
+
+4) Data Input: 5 2
+Description: In the second sentence it prints "another books" instead of "another book."
+
+5) Data Input: 6 1
+Description: It says that this is valid input instead of invalid and says that for all sentence inputs.
+
+6) Data Input: 2 4
+Description: The out put from this prints hot out instead of cold.

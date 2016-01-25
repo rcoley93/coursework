@@ -16,14 +16,24 @@ q - quits the program
 
 ###Files
 Makefile
+
 bigint.cpp
+
 bigint.h
+
 debug.cpp
+
 debug.h
+
 interstack.h
+
 main.cpp
+
 scanner.cpp
+
 scanner.h
+
 util.cpp
+
 util.h
 

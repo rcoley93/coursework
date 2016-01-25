@@ -1,0 +1,8 @@
+ERRORS
+lines error                                                      how to fix
+11    head wasnt constructed properly                            allocated memory for it
+15-16 node is constructed incorrectly                            allocated memory for it
+22-29 variables not constructed properly                            
+34    needed temp variable to fix issue
+39    node is not freed after removing it
+57-59 only freed memory of head node none of the rest though

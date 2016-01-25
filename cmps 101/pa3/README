@@ -1,0 +1,14 @@
+// Ryan Coley
+// rjcoley
+// pa3
+// README
+// Lists all files submited
+
+List.java - a doubly-linked list data structure that stores objects as the data
+MatrixTest.java - a test for the Matrix.java class
+Sparse.java - takes an input file and makes a matrix from it using the Matrix class and then does various calculations with the matrix
+Matrix.java - a data structure that makes matracies
+ListTest.java - a test for the List data structure
+Makefile - used to compile all of the files in the project
+README - Lists all files submited
+

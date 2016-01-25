@@ -1,0 +1,14 @@
+Ryan Coley
+rjcoley
+pa5
+README
+Lists all the files for pa4
+
+README - lists all the files for pa5
+List.c - doubly linked list data structure that stores integers as the data
+List.h - defines all of the components needed for List.c
+Graph.c - defines a graph datatype
+Graph.h - defines all of the components for Graph datatype
+GraphTest.c - tests the Graph datatype
+FindComponents.c - takes an input file and makes an adjacency list for it then finds the components
+Makefile - compiles the FindComponents program

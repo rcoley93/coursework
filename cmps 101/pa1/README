@@ -1,0 +1,12 @@
+// Ryan Coley
+// rjcoley
+// pa1
+// README
+// Lists all files submited
+
+List.java - a doubly-linked list data structure that stores integers as the data
+ListClient.java - a test for the List.java class
+Lex.java - takes an input file and puts the words in lexographical order using arrays and the List class
+Makefile - used to compile all of the files in the project
+README - Lists all files submited
+

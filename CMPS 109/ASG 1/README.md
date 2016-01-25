@@ -83,12 +83,21 @@ COMMANDS
 
 ###Files
 Makefile
+
 commands.cpp
+
 commands.h
+
 debug.cpp
+
 debug.h
+
 inode.cpp
+
 inode.h
+
 main.cpp
+
 util.cpp
+
 util.h

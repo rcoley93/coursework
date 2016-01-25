@@ -1,5 +1,5 @@
 #Reverse Polish Calculator with Arbitrary Precision Integer Arithmetic
-## ydc [-@flags]
+### ydc [-@flags]
 
 Commands
 + - adds
@@ -14,6 +14,7 @@ f - prints all values in the stack
 p - prints the current value at the top of the stack
 q - quits the program
 
+###Files
 Makefile
 bigint.cpp
 bigint.h

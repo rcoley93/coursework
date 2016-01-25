@@ -1,0 +1,39 @@
+//Ryan Coley
+//12/8/14
+//rjcoley
+//1332490
+//asg4
+//Design.txt
+//tells about the reason how i designed asg4
+
+This project from the start was fun to do. But it was a little tricky
+due to the fact that there wasn't any framework code from the begining
+to start with. This project was all designed by me from the get go.
+The data structures I originally thought of using for this programs included
+a class that held all of the other data structers with the title and description
+of the room, inside the room class there was two custom classes one was a BST, to 
+store the rooms available and the other was a queue to store the options. This didn't
+work out when I was writing code so I combined both to an unordered linked list. It didn't work out
+because I couldn't find a way to get the room choosen after the options were set.
+So my room class now looked like:
+	class Room{
+		String Title;
+		String Description;
+		Queue Options;
+		Room nextRoom;
+	}
+I then realized that I needed a way to figure out what the last room that was went to. I assumed that
+all rooms had different names so I just had another string in the Room class that stored the title of the
+previous room. I also had a key variable in both of the Queue class and the Room class so that way i 
+was able to keep track of how many options there were and in the Room class I tried, but failed to 
+implement a was so that way all classes had a different key, so it wouldn't matter if two rooms had
+the same name. I used unordered queues as the main data structer for this assignment because it was the
+easiest to implement due to the short amount of time I had to work on the assignment. It might have been
+more efficient to use other ones, but I didn't have the time to explore those other options. 
+
+To go to and from rooms I searched for the title of room and if it wasn't the same I would go to the next room. 
+To get the user option I typecasted the user's input from a char to an int and subtracted off a bias of 97. 
+Then I looped throughthe options in the room that many times to get the room title of the room that the user 
+wants. Then to set the previous room I made a temporary copy of the current room title and when the user go 
+to the new room I saved the old room title to the new room's prevRoom string. That's how the user would move 
+around.

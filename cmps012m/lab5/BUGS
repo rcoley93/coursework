@@ -1,0 +1,16 @@
+//Ryan Coley
+//1332490
+//rjcoley
+//CMPS12B
+//11/17/14
+//BUGS
+//list of bugs in list.c that were fixed and how they were fixed
+
+lines error                                                      how it was fixed
+11    head wasnt constructed properly                            allocated memory for it
+15-16 node is constructed incorrectly                            allocated memory for it
+22-29 variables not constructed properly                         changed variables to pointers, allocated memory and corrected syntax   
+34    needed temp variable to fix issue                          added temp node and set it to head->next and ended up with temp->next 
+                                                                 instead of head->next->next
+39    node is not freed after removing it                        unallocated nodes memory
+57-59 only freed memory of head node none of the rest though     rewrote function to unallocate all of memory used

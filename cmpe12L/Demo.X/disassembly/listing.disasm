@@ -1,0 +1,1239 @@
+Disassembly Listing for Demo
+Generated From:
+X:/private/cmpe12L/Demo.X/dist/default/debug/Demo.X.debug.elf
+Nov 24, 2014 3:02:49 PM
+
+---  x:/private/cmpe12l/demo.x/demo.c  ------------------------------------------------------------------
+1:                   /* 
+2:                    * File:   demo.c
+3:                    * Author: mrg
+4:                    *
+5:                    * Created on October 31, 2014, 9:29 AM
+6:                    */
+7:                   
+8:                   // **** Include libraries here ****
+9:                   // Standard libraries
+10:                  #include <stdio.h>
+11:                  #include <stdlib.h>
+12:                  
+13:                  // Microchip libraries
+14:                  #include <xc.h>
+15:                  #include <plib.h>
+16:                  #include <p32xxxx.h>
+17:                  
+18:                  
+19:                  // User libraries
+20:                  
+21:                  // **** Set macros and preprocessor directives ****
+22:                  #define SYS_FREQ       80000000L
+23:                  #define F_PB           20000000L
+24:                  #define UART_BAUD_RATE    115200
+25:                  #define UART_USED          UART1
+26:                  
+27:                  // **** Define global, module-level, or external variables here ****
+28:                  
+29:                  // **** Declare function prototypes ****
+30:                  
+31:                  // **** Set processor configuration ****
+32:                  // Configuration Bit settings
+33:                  // SYSCLK = 80 MHz (8MHz Crystal/ FPLLIDIV * FPLLMUL / FPLLODIV)
+34:                  // PBCLK = 20 MHz
+35:                  // Primary Osc w/PLL (XT+,HS+,EC+PLL)
+36:                  #pragma config FPLLIDIV   = DIV_2     // Set the PLL input divider to 2
+37:                  #pragma config FPLLMUL    = MUL_20    // Set the PLL multiplier to 20
+38:                  #pragma config FPLLODIV   = DIV_1     // Don't modify the PLL output.
+39:                  #pragma config FNOSC      = PRIPLL    // Set the primary oscillator to internal RC w/ PLL
+40:                  #pragma config FSOSCEN    = OFF       // Disable the secondary oscillator
+41:                  #pragma config IESO       = OFF       // Internal/External Switch O
+42:                  #pragma config POSCMOD    = XT        // Primary Oscillator Configuration
+43:                  #pragma config OSCIOFNC   = OFF       // Disable clock signal output
+44:                  #pragma config FPBDIV     = DIV_4     // Set the peripheral clock to 1/4 system clock
+45:                  #pragma config FCKSM      = CSECMD    // Clock Switching and Monitor Selection
+46:                  #pragma config WDTPS      = PS1       // Specify the watchdog timer interval (unused)
+47:                  #pragma config FWDTEN     = OFF       // Disable the watchdog timer
+48:                  #pragma config ICESEL     = ICS_PGx2  // Allow for debugging with the Uno32
+49:                  #pragma config PWP        = OFF       // Keep the program flash writeable
+50:                  #pragma config BWP        = OFF       // Keep the boot flash writeable
+51:                  #pragma config CP         = OFF       // Disable code protect
+52:                  
+53:                  // This needs to be uncommented to implement your assembly function
+54:                  extern int getDelay();
+55:                  extern int getMessage();
+56:                  
+57:                  
+58:                  int main(void)
+59:                  {
+9D000000  27BDFF58   ADDIU SP, SP, -168
+9D000004  AFBF00A4   SW RA, 164(SP)
+9D000008  AFBE00A0   SW S8, 160(SP)
+9D00000C  03A0F021   ADDU S8, SP, ZERO
+9D000010  3C0204C4   LUI V0, 1220
+9D000014  3442B400   ORI V0, V0, -19456
+9D000018  AFC20020   SW V0, 32(S8)
+9D00001C  24020005   ADDIU V0, ZERO, 5
+9D000020  AFC20024   SW V0, 36(S8)
+60:                      // Configure the device for maximum performance but do not change the PBDIV
+61:                      // Given the options, this function will change the flash wait states, RAM
+62:                      // wait state and enable prefetch cache but will not change the PBDIV.
+63:                      // The PBDIV value is already set via the pragma FPBDIV option above..
+64:                      SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
+65:                  
+66:                      // Auto-configure the PIC32 for optimum performance at the specified operating frequency.
+67:                      SYSTEMConfigPerformance(SYS_FREQ);
+68:                  
+69:                      // osc source, PLL multipler value, PLL postscaler , RC divisor
+70:                      OSCConfig(OSC_POSC_PLL, OSC_PLL_MULT_20, OSC_PLL_POST_1, OSC_FRC_POST_1);
+9D0003D8  24040300   ADDIU A0, ZERO, 768
+9D0003DC  3C050005   LUI A1, 5
+9D0003E0  00003021   ADDU A2, ZERO, ZERO
+9D0003E4  00003821   ADDU A3, ZERO, ZERO
+9D0003E8  0F400256   JAL OSCConfig
+9D0003EC  00000000   NOP
+9D0003F0  3C020010   LUI V0, 16
+9D0003F4  AFC20088   SW V0, 136(S8)
+71:                  
+72:                      // Configure the PB bus to run at 1/4 the CPU frequency
+73:                      OSCSetPBDIV(OSC_PB_DIV_4);
+74:                  
+75:                      // Enable multi-vector interrupts
+76:                      INTEnableSystemMultiVectoredInt();
+9D000488  0F400447   JAL INTEnableSystemMultiVectoredInt
+9D00048C  00000000   NOP
+77:                      INTEnableInterrupts();
+9D000490  0F400484   JAL INTEnableInterrupts
+9D000494  00000000   NOP
+78:                  
+79:                      // Set up the UART peripheral so we can send serial data.
+80:                      UARTConfigure(UART_USED, UART_ENABLE_PINS_TX_RX_ONLY);
+9D000498  00002021   ADDU A0, ZERO, ZERO
+9D00049C  00002821   ADDU A1, ZERO, ZERO
+9D0004A0  0F40040D   JAL UARTConfigure
+9D0004A4  00000000   NOP
+81:                      UARTSetFifoMode(UART_USED, UART_INTERRUPT_ON_TX_NOT_FULL | UART_INTERRUPT_ON_RX_NOT_EMPTY);
+9D0004A8  00002021   ADDU A0, ZERO, ZERO
+9D0004AC  00002821   ADDU A1, ZERO, ZERO
+9D0004B0  0F400454   JAL UARTSetFifoMode
+9D0004B4  00000000   NOP
+82:                      UARTSetLineControl(UART_USED, UART_DATA_SIZE_8_BITS | UART_PARITY_NONE | UART_STOP_BITS_1);
+9D0004B8  00002021   ADDU A0, ZERO, ZERO
+9D0004BC  00002821   ADDU A1, ZERO, ZERO
+9D0004C0  0F40045E   JAL UARTSetLineControl
+9D0004C4  00000000   NOP
+83:                      UARTSetDataRate(UART_USED, F_PB, UART_BAUD_RATE);
+9D0004C8  00002021   ADDU A0, ZERO, ZERO
+9D0004CC  3C020131   LUI V0, 305
+9D0004D0  34452D00   ORI A1, V0, 11520
+9D0004D4  3C020001   LUI V0, 1
+9D0004D8  3446C200   ORI A2, V0, -15872
+9D0004DC  0F400318   JAL UARTSetDataRate
+9D0004E0  00000000   NOP
+84:                      UARTEnable(UART_USED, UART_ENABLE | UART_TX);
+9D0004E4  00002021   ADDU A0, ZERO, ZERO
+9D0004E8  24050084   ADDIU A1, ZERO, 132
+9D0004EC  0F40035F   JAL UARTEnable
+9D0004F0  00000000   NOP
+85:                  
+86:                      // And configure printf/scanf to use the correct UART.
+87:                      if (UART_USED == UART1) {
+88:                          __XC_UART = 1;
+9D0004F4  24020001   ADDIU V0, ZERO, 1
+9D0004F8  AF828010   SW V0, -32752(GP)
+89:                      }
+90:                  
+91:                      // Enable LED outputs 0-7 by setting TRISE register
+92:                      TRISECLR = 0x00FF;
+9D0004FC  3C02BF88   LUI V0, -16504
+9D000500  240300FF   ADDIU V1, ZERO, 255
+9D000504  AC436104   SW V1, 24836(V0)
+93:                      // Initialize the PORTE to 0
+94:                      PORTECLR = 0x00FF;
+9D000508  3C02BF88   LUI V0, -16504
+9D00050C  240300FF   ADDIU V1, ZERO, 255
+9D000510  AC436114   SW V1, 24852(V0)
+95:                      // Set the lowest bit
+96:                      int mask = 1;
+9D000514  24020001   ADDIU V0, ZERO, 1
+9D000518  AFC20010   SW V0, 16(S8)
+97:                      PORTESET = mask;
+9D00051C  8FC30010   LW V1, 16(S8)
+9D000520  3C02BF88   LUI V0, -16504
+9D000524  AC436118   SW V1, 24856(V0)
+98:                     getMessage();
+9D000528  0F40033C   JAL 0x9D000CF0
+9D00052C  00000000   NOP
+99:                      // Loop forever, it is bad to exit in an embedded processor.
+100:                     int count=0; // move this into the delay function
+9D000530  AFC00018   SW ZERO, 24(S8)
+101:                     while (1) {
+102:                         // Move this printf into your getDelay function!
+103:                 //        printf("Hello, world! %d\n",count++);
+104:                         
+105:                         // Replace this with the getDelay function call!
+106:                         int delay = 0x8000000;
+9D000534  3C020800   LUI V0, 2048
+9D000538  AFC2001C   SW V0, 28(S8)
+107:                        delay = getDelay();
+9D00053C  0F400481   JAL 0x9D001204
+9D000540  00000000   NOP
+9D000544  AFC2001C   SW V0, 28(S8)
+108:                 
+109:                         // do nothing for a lot of cycles
+110:                         int i=0;
+9D000548  AFC00014   SW ZERO, 20(S8)
+111:                         for(i=0;i<delay;i++)
+9D00054C  AFC00014   SW ZERO, 20(S8)
+9D000550  0B400159   J 0x9D000564
+9D000554  00000000   NOP
+9D000558  8FC20014   LW V0, 20(S8)
+9D00055C  24420001   ADDIU V0, V0, 1
+9D000560  AFC20014   SW V0, 20(S8)
+9D000564  8FC30014   LW V1, 20(S8)
+9D000568  8FC2001C   LW V0, 28(S8)
+9D00056C  0062102A   SLT V0, V1, V0
+9D000570  1440FFF9   BNE V0, ZERO, 0x9D000558
+9D000574  00000000   NOP
+112:                             ;
+113:                         // shift left by 1
+114:                         mask = mask << 1;
+9D000578  8FC20010   LW V0, 16(S8)
+9D00057C  00021040   SLL V0, V0, 1
+9D000580  AFC20010   SW V0, 16(S8)
+115:                         // rotate around if more than 8 bits
+116:                         if (mask & 0x0100)
+9D000584  8FC20010   LW V0, 16(S8)
+9D000588  30420100   ANDI V0, V0, 256
+9D00058C  10400003   BEQ V0, ZERO, 0x9D00059C
+9D000590  00000000   NOP
+117:                             mask = 1;
+9D000594  24020001   ADDIU V0, ZERO, 1
+9D000598  AFC20010   SW V0, 16(S8)
+118:                         // Set the output to the new mask
+119:                         PORTE=mask;
+9D00059C  8FC30010   LW V1, 16(S8)
+9D0005A0  3C02BF88   LUI V0, -16504
+9D0005A4  AC436110   SW V1, 24848(V0)
+120:                 
+121:                     }
+9D0005A8  0B40014D   J 0x9D000534
+9D0005AC  00000000   NOP
+122:                 
+123:                 
+124:                 
+125:                 
+126:                 
+127:                 
+128:                 
+129:                 }
+---  c:/program files (x86)/microchip/xc32/v1.33/pic32mx/include/peripheral/system.h  -------------------
+1:                   /********************************************************************
+2:                   
+3:                   	System Library Interface Definition
+4:                   	
+5:                   	Summary:
+6:                   		This file contains the interface definition for the System
+7:                   		peripheral library.
+8:                   		
+9:                   	Description:
+10:                  		This library provides functions for configuring the peripheral
+11:                  		clock, cache settings, and wait states.  For details on the
+12:                  		register and bit settings used by these functions, refer to the
+13:                  		PIC32 Family Reference Manual.
+14:                  
+15:                  
+16:                   ********************************************************************/
+17:                  //DOM-IGNORE-BEGIN
+18:                  /********************************************************************
+19:                   * FileName:		System.h
+20:                   * Dependencies:
+21:                   * Processor:		PIC32
+22:                   * Hardware:		N/A
+23:                   * Assembler:		N/A
+24:                   * Linker:		    N/A
+25:                   * Company:		    Microchip Technology Inc.
+26:                   *
+27:                   * Software License Agreement:
+28:                   * The software supplied herewith by Microchip Technology Incorporated
+29:                   * (the ?Company?) for its PICmicro® Microcontroller is intended and
+30:                   * supplied to you, the Company?s customer, for use solely and
+31:                   * exclusively on Microchip PICmicro Microcontroller products. The
+32:                   * software is owned by the Company and/or its supplier, and is
+33:                   * protected under applicable copyright laws. All rights are reserved.
+34:                   * Any use in violation of the foregoing restrictions may subject the
+35:                   * user to criminal sanctions under applicable laws, as well as to
+36:                   * civil liability for the breach of the terms and conditions of this
+37:                   * license.
+38:                   *
+39:                   * THIS SOFTWARE IS PROVIDED IN AN ?AS IS? CONDITION. NO WARRANTIES,
+40:                   * WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
+41:                   * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+42:                   * PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
+43:                   * IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL OR
+44:                   * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+45:                   *
+46:                   * $Id: CoreTimer.h,v 1.2 2006/11/03 15:07:21 C12923 Exp $
+47:                   * $Name:  $
+48:                   ********************************************************************/
+49:                  //DOM-IGNORE-END
+50:                   
+51:                   
+52:                  #ifndef _SYSTEM_HEADER_FILE
+53:                  #define _SYSTEM_HEADER_FILE
+54:                  
+55:                  #include <xc.h>
+56:                  #include <peripheral/int.h>
+57:                  #include <peripheral/pcache.h>
+58:                  #include <peripheral/osc.h>
+59:                  #include <peripheral/dma.h>
+60:                  #include <peripheral/bmx.h>
+61:                  #include <peripheral/lock.h>
+62:                  #ifdef __cplusplus
+63:                  extern "C"
+64:                    {
+65:                  #endif
+66:                  
+67:                  /*
+68:                  *  WARNING: All the Peripheral Library (PLIB) functions, including those in this file, 
+69:                  *  will be removed from future releases of MPLAB XC32 C/C++ Compiler.  
+70:                  *  Please refer to the MPLAB Harmony Libraries for new projects.  For legacy support,
+71:                  *  these PLIB Libraries will be available for download from: www.microchip.com/pic32_peripheral_lib
+72:                  */
+73:                  #ifndef _SUPPRESS_PLIB_WARNING
+74:                  #warning The PLIB functions and macros in this file will be removed from the MPLAB XC32 C/C++ Compiler in future releases
+75:                  #endif
+76:                  
+77:                  
+78:                  
+79:                  #define FLASH_SPEED_HZ          30000000 //Max Flash speed
+80:                  #define PB_BUS_MAX_FREQ_HZ      80000000 //Max Peripheral bus speed
+81:                  
+82:                  /*********************************************************************
+83:                   * SYSTEMConfig Flags
+84:                   *********************************************************************/
+85:                  #define SYS_CFG_WAIT_STATES     0x00000001 //SYSTEMConfig wait states
+86:                  #define SYS_CFG_PB_BUS          0x00000002 //SYSTEMConfig pb bus
+87:                  #define SYS_CFG_PCACHE          0x00000004 //SYSTEMConfig cache
+88:                  #define SYS_CFG_ALL             0xFFFFFFFF //SYSTEMConfig All
+89:                  
+90:                  /*********************************************************************
+91:                   Function:       
+92:                  	unsigned int SYSTEMConfigPB(unsigned int sys_clock)
+93:                   
+94:                   Description:
+95:                  	The function sets the PB divider to the optimum value.
+96:                   
+97:                   PreCondition:    
+98:                  	None
+99:                   
+100:                  Parameters:           
+101:                 	sys_clock - system clock in Hz
+102:                  
+103:                  Returns:          
+104:                 	the PB clock frequency in Hz
+105:                  
+106:                  Side Effects:
+107:                 	The PB clock may be changed
+108:                 	
+109:                  Overview:	    
+110:                 	The function sets the PB divider to the optimum value.
+111:                  
+112:                  Remarks:            
+113:                 	The interrupts are disabled briefly, the DMA is suspended and the system is unlocked while performing the operation.
+114:                     Upon return the previous status of the interrupts and the DMA are restored. The system is re-locked.
+115:                  
+116:                  Example:
+117:                 	<code>
+118:                 	SYSTEMConfigPB(72000000);
+119:                 	</code>
+120:                  ********************************************************************/
+121:                 extern inline unsigned int __attribute__((always_inline)) SYSTEMConfigPB(unsigned int sys_clock)
+122:                 {
+123:                     unsigned int pb_div;
+124:                     unsigned int pb_clock;
+125:                 
+126:                     pb_clock = sys_clock;
+9D0000D8  8FC20038   LW V0, 56(S8)
+9D0000DC  AFC2003C   SW V0, 60(S8)
+9D000238  8FC2005C   LW V0, 92(S8)
+9D00023C  AFC20060   SW V0, 96(S8)
+127:                 
+128:                     if(sys_clock > PB_BUS_MAX_FREQ_HZ)
+9D0000E0  8FC30038   LW V1, 56(S8)
+9D0000E4  3C0204C4   LUI V0, 1220
+9D0000E8  3442B401   ORI V0, V0, -19455
+9D0000EC  0062102B   SLTU V0, V1, V0
+9D0000F0  14400008   BNE V0, ZERO, 0x9D000114
+9D0000F4  00000000   NOP
+9D000240  8FC3005C   LW V1, 92(S8)
+9D000244  3C0204C4   LUI V0, 1220
+9D000248  3442B401   ORI V0, V0, -19455
+9D00024C  0062102B   SLTU V0, V1, V0
+9D000250  14400008   BNE V0, ZERO, 0x9D000274
+9D000254  00000000   NOP
+129:                     {
+130:                         pb_div=OSC_PB_DIV_2;
+9D0000F8  3C020008   LUI V0, 8
+9D0000FC  AFC20040   SW V0, 64(S8)
+9D000258  3C020008   LUI V0, 8
+9D00025C  AFC20064   SW V0, 100(S8)
+131:                         pb_clock >>= 1;
+9D000100  8FC2003C   LW V0, 60(S8)
+9D000104  00021042   SRL V0, V0, 1
+9D000108  AFC2003C   SW V0, 60(S8)
+9D00010C  0B400046   J 0x9D000118
+9D000110  00000000   NOP
+9D000260  8FC20060   LW V0, 96(S8)
+9D000264  00021042   SRL V0, V0, 1
+9D000268  AFC20060   SW V0, 96(S8)
+9D00026C  0B40009E   J 0x9D000278
+9D000270  00000000   NOP
+132:                     }
+133:                     else
+134:                     {
+135:                         pb_div=OSC_PB_DIV_1;
+9D000114  AFC00040   SW ZERO, 64(S8)
+9D000118  8FC20040   LW V0, 64(S8)
+9D00011C  AFC20044   SW V0, 68(S8)
+9D000274  AFC00064   SW ZERO, 100(S8)
+9D000278  8FC20064   LW V0, 100(S8)
+9D00027C  AFC20068   SW V0, 104(S8)
+136:                     }
+137:                 
+138:                     OSCSetPBDIV(pb_div);
+139:                 
+140:                     return pb_clock;
+9D000310  8FC20060   LW V0, 96(S8)
+141:                 }
+142:                 
+143:                 
+144:                 /*********************************************************************
+145:                   Function:        
+146:                 	void SYSTEMConfigWaitStates(unsigned int sys_clock)
+147:                  
+148:                   Description:
+149:                 	The function sets the Flash Wait states to the optimum value.
+150:                  
+151:                   PreCondition:    
+152:                 	None
+153:                  
+154:                   Parameters:           
+155:                 	sys_clock - system clock in Hz
+156:                  
+157:                   Returns:          
+158:                 	None
+159:                  
+160:                   Side Effects:    
+161:                 	The Wait States may be changed  
+162:                  
+163:                   Remarks:         
+164:                 	The interrupts are disabled briefly, the DMA is suspended and the system is unlocked while performing the operation.
+165:                     Upon return the previous status of the interrupts and the DMA are restored. The system is re-locked.
+166:                  
+167:                   Example:
+168:                 	<code>
+169:                 	SYSTEMConfigWaitStates(72000000);
+170:                 	</code>
+171:                  ********************************************************************/
+172:                 extern inline void __attribute__((always_inline)) SYSTEMConfigWaitStates(unsigned int sys_clock)
+173:                 {
+174:                 #ifdef _PCACHE
+175:                     unsigned int wait_states;
+176:                     unsigned int int_status;
+177:                 #endif
+178:                 
+179:                 #ifdef _PCACHE
+180:                     wait_states = 0;
+9D000058  AFC00030   SW ZERO, 48(S8)
+9D00005C  0B400021   J 0x9D000084
+9D000060  00000000   NOP
+181:                 
+182:                     while(sys_clock > FLASH_SPEED_HZ)
+9D000084  8FC3002C   LW V1, 44(S8)
+9D000088  3C0201C9   LUI V0, 457
+9D00008C  3442C381   ORI V0, V0, -15487
+9D000090  0062102B   SLTU V0, V1, V0
+9D000094  1040FFF3   BEQ V0, ZERO, 0x9D000064
+9D000098  00000000   NOP
+183:                     {
+184:                         wait_states++;
+9D000064  8FC20030   LW V0, 48(S8)
+9D000068  24420001   ADDIU V0, V0, 1
+9D00006C  AFC20030   SW V0, 48(S8)
+185:                         sys_clock -= FLASH_SPEED_HZ;
+9D000070  8FC3002C   LW V1, 44(S8)
+9D000074  3C02FE36   LUI V0, -458
+9D000078  34423C80   ORI V0, V0, 15488
+9D00007C  00621021   ADDU V0, V1, V0
+9D000080  AFC2002C   SW V0, 44(S8)
+186:                     }
+187:                 
+188:                     int_status=INTDisableInterrupts();
+9D00009C  0F400486   JAL INTDisableInterrupts
+9D0000A0  00000000   NOP
+9D0000A4  AFC20034   SW V0, 52(S8)
+189:                     mCheConfigure(wait_states);
+9D0000A8  3C02BF88   LUI V0, -16504
+9D0000AC  8FC30030   LW V1, 48(S8)
+9D0000B0  AC434000   SW V1, 16384(V0)
+190:                     INTRestoreInterrupts(int_status);
+9D0000B4  8FC40034   LW A0, 52(S8)
+9D0000B8  0F400468   JAL INTRestoreInterrupts
+9D0000BC  00000000   NOP
+191:                 
+192:                 #endif
+193:                 }
+194:                 
+195:                 /*********************************************************************
+196:                   Function:        
+197:                 		unsigned int SYSTEMConfigWaitStatesAndPB(unsigned int sys_clock)
+198:                   
+199:                   Description:
+200:                 	The function sets the PB divider and the Flash Wait states to the optimum value.
+201:                  
+202:                   PreCondition:    
+203:                 	None
+204:                  
+205:                   Parameters:           
+206:                 	sys_clock - system clock in Hz
+207:                  
+208:                   Returns:          
+209:                 	the PB clock frequency in Hz
+210:                  
+211:                   Side Effects:    
+212:                 	The PB clock and wait states may be changed
+213:                 
+214:                   Remarks:            
+215:                 	The interrupts are disabled briefly, the DMA is suspended and the system is unlocked while performing the operation.
+216:                     Upon return the previous status of the interrupts and the DMA are restored. The system is re-locked.
+217:                  
+218:                   Example:
+219:                 	<code>
+220:                 	SYSTEMConfigWaitStatesAndPB(72000000);
+221:                 	</code>
+222:                  ********************************************************************/
+223:                 extern inline unsigned int __attribute__((always_inline)) SYSTEMConfigWaitStatesAndPB(unsigned int sys_clock)
+224:                 {
+225:                 #ifdef _PCACHE
+226:                     unsigned int wait_states;
+227:                 #endif
+228:                     unsigned int pb_clock;
+229:                     unsigned int int_status;
+230:                 
+231:                     pb_clock = SYSTEMConfigPB(sys_clock);
+9D000314  AFC20070   SW V0, 112(S8)
+232:                 
+233:                 
+234:                     // set the flash wait states based on 1 wait state
+235:                     // for every 20 MHz
+236:                 #ifdef _PCACHE
+237:                     wait_states = 0;
+9D000318  AFC00074   SW ZERO, 116(S8)
+9D00031C  0B4000D1   J 0x9D000344
+9D000320  00000000   NOP
+238:                 
+239:                     while(sys_clock > FLASH_SPEED_HZ)
+9D000344  8FC30058   LW V1, 88(S8)
+9D000348  3C0201C9   LUI V0, 457
+9D00034C  3442C381   ORI V0, V0, -15487
+9D000350  0062102B   SLTU V0, V1, V0
+9D000354  1040FFF3   BEQ V0, ZERO, 0x9D000324
+9D000358  00000000   NOP
+240:                     {
+241:                         wait_states++;
+9D000324  8FC20074   LW V0, 116(S8)
+9D000328  24420001   ADDIU V0, V0, 1
+9D00032C  AFC20074   SW V0, 116(S8)
+242:                         sys_clock -= FLASH_SPEED_HZ;
+9D000330  8FC30058   LW V1, 88(S8)
+9D000334  3C02FE36   LUI V0, -458
+9D000338  34423C80   ORI V0, V0, 15488
+9D00033C  00621021   ADDU V0, V1, V0
+9D000340  AFC20058   SW V0, 88(S8)
+243:                     }
+244:                 
+245:                     int_status=INTDisableInterrupts();
+9D00035C  0F400486   JAL INTDisableInterrupts
+9D000360  00000000   NOP
+9D000364  AFC20078   SW V0, 120(S8)
+246:                     mCheConfigure(wait_states);
+9D000368  3C02BF88   LUI V0, -16504
+9D00036C  8FC30074   LW V1, 116(S8)
+9D000370  AC434000   SW V1, 16384(V0)
+247:                     INTRestoreInterrupts(int_status);
+9D000374  8FC40078   LW A0, 120(S8)
+9D000378  0F400468   JAL INTRestoreInterrupts
+9D00037C  00000000   NOP
+248:                 
+249:                 #endif
+250:                 
+251:                     return pb_clock;
+9D000380  8FC20070   LW V0, 112(S8)
+252:                 }
+253:                 /*********************************************************************
+254:                   Function:       
+255:                 	unsigned int SYSTEMConfigPerformance(unsigned int sys_clock)
+256:                  
+257:                   Description:
+258:                 	The function sets the PB divider, the Flash Wait states and the DRM wait states to the optimum value.
+259:                     It also enables the cacheability for the K0 segment.
+260:                 	
+261:                   PreCondition:    
+262:                 	None
+263:                  
+264:                   Parameters:           
+265:                 	sys_clock - system clock in Hz
+266:                  
+267:                   Output:          
+268:                 	the PB clock frequency in Hz
+269:                  
+270:                   Side Effects:    
+271:                 	Sets the PB and Flash Wait states
+272:                  	
+273:                   Remarks:            
+274:                 	The interrupts are disabled briefly, the DMA is suspended and the system is unlocked while performing the operation.
+275:                     Upon return the previous status of the interrupts and the DMA are restored. The system is re-locked.
+276:                  
+277:                   Example:
+278:                 	<code>
+279:                 	SYSTEMConfigPerformance(72000000);
+280:                 	</code>
+281:                  ********************************************************************/
+282:                 extern inline unsigned int __attribute__((always_inline)) SYSTEMConfigPerformance(unsigned int sys_clock)
+283:                 {
+284:                     // set up the wait states
+285:                     unsigned int pb_clk;
+286:                 #ifdef _PCACHE
+287:                     unsigned int cache_status;
+288:                 #endif
+289:                     unsigned int int_status;
+290:                 
+291:                     pb_clk = SYSTEMConfigWaitStatesAndPB(sys_clock);
+9D000384  AFC2007C   SW V0, 124(S8)
+292:                 
+293:                     int_status=INTDisableInterrupts();
+9D000388  0F400486   JAL INTDisableInterrupts
+9D00038C  00000000   NOP
+9D000390  AFC20080   SW V0, 128(S8)
+294:                 
+295:                     mBMXDisableDRMWaitState();
+9D000394  3C02BF88   LUI V0, -16504
+9D000398  24030040   ADDIU V1, ZERO, 64
+9D00039C  AC432004   SW V1, 8196(V0)
+296:                 
+297:                 #ifdef _PCACHE
+298:                     cache_status = mCheGetCon();
+9D0003A0  3C02BF88   LUI V0, -16504
+9D0003A4  8C424000   LW V0, 16384(V0)
+9D0003A8  AFC20084   SW V0, 132(S8)
+299:                     cache_status |= CHE_CONF_PF_ALL;
+9D0003AC  8FC20084   LW V0, 132(S8)
+9D0003B0  34420030   ORI V0, V0, 48
+9D0003B4  AFC20084   SW V0, 132(S8)
+300:                     mCheConfigure(cache_status);
+9D0003B8  3C02BF88   LUI V0, -16504
+9D0003BC  8FC30084   LW V1, 132(S8)
+9D0003C0  AC434000   SW V1, 16384(V0)
+301:                     CheKseg0CacheOn();
+9D0003C4  0F400475   JAL CheKseg0CacheOn
+9D0003C8  00000000   NOP
+302:                 #endif
+303:                 
+304:                     INTRestoreInterrupts(int_status);
+9D0003CC  8FC40080   LW A0, 128(S8)
+9D0003D0  0F400468   JAL INTRestoreInterrupts
+9D0003D4  00000000   NOP
+305:                 
+306:                     return pb_clk;
+307:                 
+308:                 }
+309:                 /*********************************************************************
+310:                   Function:       
+311:                 	unsigned int SYSTEMConfig(unsigned int sys_clock, unsigned int flags)
+312:                  
+313:                   Description:
+314:                 	The function sets the PB divider, the Flash Wait states or the DRM wait states to the optimum value, 
+315:                 	based on the flags selected and on the frequency of the system clock.
+316:                     It also enables the cacheability for the K0 segment.
+317:                 				   
+318:                   PreCondition:    
+319:                 	None
+320:                  
+321:                   Parameters:           
+322:                 	sys_clock - system clock frequency in Hz
+323:                     flags -
+324:                 		*    SYS_CFG_WAIT_STATES  - configure the flash wait states from the system clock
+325:                         *    SYS_CFG_PB_BUS       - configure the PB bus from the system clock
+326:                         *    SYS_CFG_PCACHE      - configure the pCache (if used)
+327:                         *    SYS_CFG_ALL          - configure all based on system clock
+328:                  
+329:                   Returns:          
+330:                 	the PB clock frequency in Hz
+331:                  
+332:                   Side Effects:    
+333:                 	Could change the wait state, pb clock and turn on the pre-fetch buffer and cache. Sets the RAM
+334:                     wait state to 0.
+335:                   
+336:                  
+337:                   Remarks:
+338:                 	The interrupts are disabled shortly, the DMA is suspended and the system is unlocked while performing the operation.
+339:                     Upon return the previous status of the interrupts and the DMA are restored. The system is re-locked.
+340:                  
+341:                   Example:
+342:                 	<code>
+343:                 	SYSTEMConfig(72000000, SYS_CFG_ALL);
+344:                 	</code>
+345:                  ********************************************************************/
+346:                 extern inline unsigned int __attribute__((always_inline)) SYSTEMConfig(unsigned int sys_clock, unsigned int flags)
+347:                 {
+348:                     unsigned int pb_clk;
+349:                     unsigned int int_status;
+350:                 #ifdef _PCACHE
+351:                     unsigned int cache_status;
+352:                 #endif
+353:                 
+354:                     int_status=INTDisableInterrupts();
+9D000024  0F400486   JAL INTDisableInterrupts
+9D000028  00000000   NOP
+9D00002C  AFC20028   SW V0, 40(S8)
+355:                 
+356:                     mBMXDisableDRMWaitState();
+9D000030  3C02BF88   LUI V0, -16504
+9D000034  24030040   ADDIU V1, ZERO, 64
+9D000038  AC432004   SW V1, 8196(V0)
+357:                 
+358:                     if(flags & SYS_CFG_WAIT_STATES)
+9D00003C  8FC20024   LW V0, 36(S8)
+9D000040  30420001   ANDI V0, V0, 1
+9D000044  304200FF   ANDI V0, V0, 255
+9D000048  1040001D   BEQ V0, ZERO, 0x9D0000C0
+9D00004C  00000000   NOP
+9D000050  8FC20020   LW V0, 32(S8)
+9D000054  AFC2002C   SW V0, 44(S8)
+359:                     {
+360:                         SYSTEMConfigWaitStates(sys_clock);
+361:                     }
+362:                 
+363:                     if(flags & SYS_CFG_PB_BUS)
+9D0000C0  8FC20024   LW V0, 36(S8)
+9D0000C4  30420002   ANDI V0, V0, 2
+9D0000C8  10400039   BEQ V0, ZERO, 0x9D0001B0
+9D0000CC  00000000   NOP
+9D0000D0  8FC20020   LW V0, 32(S8)
+9D0000D4  AFC20038   SW V0, 56(S8)
+364:                     {
+365:                         SYSTEMConfigPB(sys_clock);
+366:                     }
+367:                 
+368:                 
+369:                 #ifdef _PCACHE
+370:                     if(flags & SYS_CFG_PCACHE)
+9D0001B0  8FC20024   LW V0, 36(S8)
+9D0001B4  30420004   ANDI V0, V0, 4
+9D0001B8  1040000C   BEQ V0, ZERO, 0x9D0001EC
+9D0001BC  00000000   NOP
+371:                     {
+372:                         cache_status = mCheGetCon();
+9D0001C0  3C02BF88   LUI V0, -16504
+9D0001C4  8C424000   LW V0, 16384(V0)
+9D0001C8  AFC2004C   SW V0, 76(S8)
+373:                         cache_status |= CHE_CONF_PF_ALL;
+9D0001CC  8FC2004C   LW V0, 76(S8)
+9D0001D0  34420030   ORI V0, V0, 48
+9D0001D4  AFC2004C   SW V0, 76(S8)
+374:                         mCheConfigure(cache_status);
+9D0001D8  3C02BF88   LUI V0, -16504
+9D0001DC  8FC3004C   LW V1, 76(S8)
+9D0001E0  AC434000   SW V1, 16384(V0)
+375:                         CheKseg0CacheOn();
+9D0001E4  0F400475   JAL CheKseg0CacheOn
+9D0001E8  00000000   NOP
+376:                     }
+377:                 #endif
+378:                 
+379:                     pb_clk = sys_clock;
+9D0001EC  8FC20020   LW V0, 32(S8)
+9D0001F0  AFC20050   SW V0, 80(S8)
+380:                     pb_clk >>= OSCCONbits.PBDIV;
+9D0001F4  3C02BF81   LUI V0, -16511
+9D0001F8  8C42F000   LW V0, -4096(V0)
+9D0001FC  7C420CC0   EXT V0, V0, 19, 2
+9D000200  304200FF   ANDI V0, V0, 255
+9D000204  8FC30050   LW V1, 80(S8)
+9D000208  00431006   SRLV V0, V1, V0
+9D00020C  AFC20050   SW V0, 80(S8)
+381:                 
+382:                     INTRestoreInterrupts(int_status);
+9D000210  8FC40028   LW A0, 40(S8)
+9D000214  0F400468   JAL INTRestoreInterrupts
+9D000218  00000000   NOP
+383:                 
+384:                     return pb_clk;
+9D00021C  3C0204C4   LUI V0, 1220
+9D000220  3442B400   ORI V0, V0, -19456
+9D000224  AFC20054   SW V0, 84(S8)
+9D000228  8FC20054   LW V0, 84(S8)
+9D00022C  AFC20058   SW V0, 88(S8)
+9D000230  8FC20058   LW V0, 88(S8)
+9D000234  AFC2005C   SW V0, 92(S8)
+385:                 
+386:                 }
+387:                 #ifdef __cplusplus
+388:                   }
+389:                 #endif
+390:                 #endif
+391:                 
+---  c:/program files (x86)/microchip/xc32/v1.33/pic32mx/include/peripheral/osc.h  ----------------------
+1:                   /*********************************************************************
+2:                    *
+3:                    *                  OSC API definitions
+4:                    *
+5:                    *********************************************************************
+6:                    * FileName:        OSC.h
+7:                    * Dependencies:
+8:                    * Processor:       PIC32
+9:                    *
+10:                   *
+11:                   * Compiler:        MPLAB XC32
+12:                   *                  MPLAB IDE
+13:                   * Company:         Microchip Technology Inc.
+14:                   *
+15:                   * Software License Agreement
+16:                   *
+17:                   * The software supplied herewith by Microchip Technology Incorporated
+18:                   * (the ?Company?) for its PIC Microcontroller is intended
+19:                   * and supplied to you, the Company?s customer, for use solely and
+20:                   * exclusively on Microchip PIC Microcontroller products.
+21:                   * The software is owned by the Company and/or its supplier, and is
+22:                   * protected under applicable copyright laws. All rights are reserved.
+23:                   * Any use in violation of the foregoing restrictions may subject the
+24:                   * user to criminal sanctions under applicable laws, as well as to
+25:                   * civil liability for the breach of the terms and conditions of this
+26:                   * license.
+27:                   *
+28:                   * THIS SOFTWARE IS PROVIDED IN AN ?AS IS? CONDITION. NO WARRANTIES,
+29:                   * WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
+30:                   * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+31:                   * PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
+32:                   * IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL OR
+33:                   * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+34:                   *
+35:                   *
+36:                   * $Id: OSC.h,v 1.6 2006/10/13 21:24:31 C12532 Exp $
+37:                   * $Name:  $
+38:                   ********************************************************************/
+39:                  
+40:                  #ifndef OSC_H_
+41:                  #define OSC_H_
+42:                  
+43:                  #include <xc.h>
+44:                  #include <peripheral/lock.h>
+45:                  
+46:                  /*
+47:                  *  WARNING: All the Peripheral Library (PLIB) functions, including those in this file, 
+48:                  *  will be removed from future releases of MPLAB XC32 C/C++ Compiler.  
+49:                  *  Please refer to the MPLAB Harmony Libraries for new projects.  For legacy support,
+50:                  *  these PLIB Libraries will be available for download from: www.microchip.com/pic32_peripheral_lib
+51:                  */
+52:                  #ifndef _SUPPRESS_PLIB_WARNING
+53:                  #warning The PLIB functions and macros in this file will be removed from the MPLAB XC32 C/C++ Compiler in future releases
+54:                  #endif
+55:                  
+56:                  
+57:                  #define _OSC_
+58:                  
+59:                  /*********************************************************************
+60:                   * Function:        OSCConfig(unsigned long int source, unsigned long int mult, unsigned long int post, unsigned long int div)
+61:                   *
+62:                   * Description:	    Sets Osc options and clock source
+63:                   *
+64:                   * PreCondition:    Interrupts must be disabled and DMA suspended or disabled
+65:                   *
+66:                   * Inputs:	    	Clock source, PLL multiplier, PLL postscaler, FRC divisor - see below
+67:                   *
+68:                   * Output:          None
+69:                   *
+70:                   * Example:	    	OSCConfig( OSC_POSC, OSC_PLL_MULT_24, OSC_PLL_POST_256, OSC_FRC_POST_64 )
+71:                   *
+72:                   * Note:	    	Forces cpu clock source to FRC(no divisor, no PLL), configures new clock
+73:                   * 		     		source and then switches to the new clock source
+74:                   *
+75:                   *		    		Unused parameters are set to zero/default values.
+76:                   ********************************************************************/
+77:                  void OSCConfig(unsigned long int source, unsigned long int mult, unsigned long int post, unsigned long int div);
+78:                  
+79:                  	/******************************************************************************
+80:                  	 * Available options for source parameter
+81:                  	 *****************************************************************************/
+82:                  		// CPU Oscillator modes - values are mutually exclusive
+83:                  		#define OSC_FRC_DIV 	(7 << _OSCCON_NOSC_POSITION)
+84:                  		#define OSC_FRC_DIV16 	(6 << _OSCCON_NOSC_POSITION)
+85:                  		#define OSC_LPRC        (5 << _OSCCON_NOSC_POSITION)
+86:                  		#define OSC_SOSC        (4 << _OSCCON_NOSC_POSITION)
+87:                  		#define OSC_POSC_PLL 	(3 << _OSCCON_NOSC_POSITION)
+88:                  		#define OSC_POSC        (2 << _OSCCON_NOSC_POSITION)
+89:                  		#define OSC_FRC_PLL 	(1 << _OSCCON_NOSC_POSITION)
+90:                  		#define OSC_FRC         (0 << _OSCCON_NOSC_POSITION)
+91:                  
+92:                  	/******************************************************************************
+93:                  	 * Available options for mult parameter
+94:                  	 *****************************************************************************/
+95:                  		// CPU PLL multiplier values - values are mutually exclusive
+96:                  		#define OSC_PLL_MULT_24 (7 << _OSCCON_PLLMULT_POSITION)
+97:                  		#define OSC_PLL_MULT_21 (6 << _OSCCON_PLLMULT_POSITION)
+98:                  		#define OSC_PLL_MULT_20 (5 << _OSCCON_PLLMULT_POSITION)
+99:                  		#define OSC_PLL_MULT_19 (4 << _OSCCON_PLLMULT_POSITION)
+100:                 		#define OSC_PLL_MULT_18 (3 << _OSCCON_PLLMULT_POSITION)
+101:                 		#define OSC_PLL_MULT_17 (2 << _OSCCON_PLLMULT_POSITION)
+102:                 		#define OSC_PLL_MULT_16 (1 << _OSCCON_PLLMULT_POSITION)
+103:                 		#define OSC_PLL_MULT_15 (0 << _OSCCON_PLLMULT_POSITION)
+104:                 
+105:                 	/******************************************************************************
+106:                 	 * Available options for post parameter
+107:                 	 *****************************************************************************/
+108:                 		// CPU PLL output divisor values - values are mutuallye exclusive
+109:                 		#define OSC_PLL_POST_256 (7 << _OSCCON_PLLODIV_POSITION)
+110:                 		#define OSC_PLL_POST_64  (6 << _OSCCON_PLLODIV_POSITION)
+111:                 		#define OSC_PLL_POST_32  (5 << _OSCCON_PLLODIV_POSITION)
+112:                 		#define OSC_PLL_POST_16  (4 << _OSCCON_PLLODIV_POSITION)
+113:                 		#define OSC_PLL_POST_8   (3 << _OSCCON_PLLODIV_POSITION)
+114:                 		#define OSC_PLL_POST_4   (2 << _OSCCON_PLLODIV_POSITION)
+115:                 		#define OSC_PLL_POST_2   (1 << _OSCCON_PLLODIV_POSITION)
+116:                 		#define OSC_PLL_POST_1   (0 << _OSCCON_PLLODIV_POSITION)
+117:                 
+118:                 	/******************************************************************************
+119:                 	 * Available options for div parameter
+120:                 	 *****************************************************************************/
+121:                 		// CPU FRC output divisor values - values are mutually exclusive
+122:                 		#define OSC_FRC_POST_256 (7 << _OSCCON_FRCDIV_POSITION)
+123:                 		#define OSC_FRC_POST_64  (6 << _OSCCON_FRCDIV_POSITION)
+124:                 		#define OSC_FRC_POST_32  (5 << _OSCCON_FRCDIV_POSITION)
+125:                 		#define OSC_FRC_POST_16  (4 << _OSCCON_FRCDIV_POSITION)
+126:                 		#define OSC_FRC_POST_8   (3 << _OSCCON_FRCDIV_POSITION)
+127:                 		#define OSC_FRC_POST_4   (2 << _OSCCON_FRCDIV_POSITION)
+128:                 		#define OSC_FRC_POST_2   (1 << _OSCCON_FRCDIV_POSITION)
+129:                 		#define OSC_FRC_POST_1   (0 << _OSCCON_FRCDIV_POSITION)
+130:                 	/***********************************
+131:                 	 * End parameter values
+132:                 	 ************************************/
+133:                 
+134:                 #if (((__PIC32_FEATURE_SET__ >= 100) && (__PIC32_FEATURE_SET__ <= 299)) || \
+135:                     (__PIC32_FEATURE_SET__ == 330) || (__PIC32_FEATURE_SET__ == 350) || (__PIC32_FEATURE_SET__ == 370) || (__PIC32_FEATURE_SET__ == 430) || (__PIC32_FEATURE_SET__ == 450) || (__PIC32_FEATURE_SET__ == 470))
+136:                 	
+137:                 		// Reference Oscillator Source Select bits - values are mutually exclusive
+138:                 	#define OSC_REFOCON_REFCLKI	 	(7 << _REFOCON_ROSEL_POSITION )
+139:                 	#define OSC_REFOCON_SYSPLL 		(7 << _REFOCON_ROSEL_POSITION )
+140:                 	#define OSC_REFOCON_USBPLL 		(6 << _REFOCON_ROSEL_POSITION )
+141:                 	#define OSC_REFOCON_SOSC        (5 << _REFOCON_ROSEL_POSITION )
+142:                 	#define OSC_REFOCON_LPRC        (4 << _REFOCON_ROSEL_POSITION )
+143:                 	#define OSC_REFOCON_FRC 		(3 << _REFOCON_ROSEL_POSITION )
+144:                 	#define OSC_REFOCON_POSC        (2 << _REFOCON_ROSEL_POSITION )
+145:                 	#define OSC_REFOCON_PBCLK 		(1 << _REFOCON_ROSEL_POSITION )
+146:                 	#define OSC_REFOCON_SYSCLK      (0 << _REFOCON_ROSEL_POSITION )
+147:                 		
+148:                 	typedef enum
+149:                 	{		
+150:                 		OSC_REFOCON_RLSPEN		=(1 << _REFOCON_RSLP_POSITION )	,
+151:                 		OSC_REFOCON_OE			=(1 << _REFOCON_OE_POSITION ),
+152:                 		OSC_REFOCON_SIDLEN		=(1 << _REFOCON_SIDL_POSITION ),
+153:                 		OSC_REFOCON_ON			=(1 << _REFOCON_ON_POSITION )
+154:                 	} OSCREFConfigFlags;
+155:                 	
+156:                 	void OSCREFConfig(unsigned long int source, OSCREFConfigFlags config, unsigned long int div);
+157:                 	 
+158:                 
+159:                 	#define mOSCREFOTRIMSet(trim) 		(REFOTRIM = (trim << _REFOTRIM_ROTRIM_POSITION))
+160:                 
+161:                 #endif
+162:                 
+163:                 	 
+164:                 	 
+165:                 	 
+166:                 /*********************************************************************
+167:                  * Function:    OSCSetPBDIV(unsigned int oscPbDiv)
+168:                  *
+169:                  * Description:	Configures peripheral bus divisor
+170:                  *
+171:                  * PreCondition: oscPbDiv one of the OSC_PB_DIV_X valid values
+172:                  *
+173:                  * Inputs:    oscPbDiv - desired PB divider
+174:                  *
+175:                  * Output:      None
+176:                  *
+177:                  * Example:   OSCSetPBDIV(  OSC_PB_DIV_8 )
+178:                  *
+179:                  ********************************************************************/
+180:                 extern inline void __attribute__((always_inline)) OSCSetPBDIV(unsigned int oscPbDiv)
+181:                 {
+182:                 	unsigned int dma_status;
+183:                 	unsigned int int_status;
+184:                 	__OSCCONbits_t oscBits;
+185:                 
+186:                 	mSYSTEMUnlock(int_status, dma_status);
+9D000120  0F400486   JAL INTDisableInterrupts
+9D000124  00000000   NOP
+9D000128  AFC20048   SW V0, 72(S8)
+9D00012C  3C02BF81   LUI V0, -16511
+9D000130  AC40F230   SW ZERO, -3536(V0)
+9D000134  3C02BF81   LUI V0, -16511
+9D000138  3C03AA99   LUI V1, -21863
+9D00013C  34636655   ORI V1, V1, 26197
+9D000140  AC43F230   SW V1, -3536(V0)
+9D000144  3C02BF81   LUI V0, -16511
+9D000148  3C035566   LUI V1, 21862
+9D00014C  346399AA   ORI V1, V1, -26198
+9D000150  AC43F230   SW V1, -3536(V0)
+9D000280  0F400486   JAL INTDisableInterrupts
+9D000284  00000000   NOP
+9D000288  AFC2006C   SW V0, 108(S8)
+9D00028C  3C02BF81   LUI V0, -16511
+9D000290  AC40F230   SW ZERO, -3536(V0)
+9D000294  3C02BF81   LUI V0, -16511
+9D000298  3C03AA99   LUI V1, -21863
+9D00029C  34636655   ORI V1, V1, 26197
+9D0002A0  AC43F230   SW V1, -3536(V0)
+9D0002A4  3C02BF81   LUI V0, -16511
+9D0002A8  3C035566   LUI V1, 21862
+9D0002AC  346399AA   ORI V1, V1, -26198
+9D0002B0  AC43F230   SW V1, -3536(V0)
+9D0003F8  0F400486   JAL INTDisableInterrupts
+9D0003FC  00000000   NOP
+9D000400  AFC2008C   SW V0, 140(S8)
+9D000404  3C02BF81   LUI V0, -16511
+9D000408  AC40F230   SW ZERO, -3536(V0)
+9D00040C  3C02BF81   LUI V0, -16511
+9D000410  3C03AA99   LUI V1, -21863
+9D000414  34636655   ORI V1, V1, 26197
+9D000418  AC43F230   SW V1, -3536(V0)
+9D00041C  3C02BF81   LUI V0, -16511
+9D000420  3C035566   LUI V1, 21862
+9D000424  346399AA   ORI V1, V1, -26198
+9D000428  AC43F230   SW V1, -3536(V0)
+187:                 	
+188:                 	oscBits.w=OSCCON;		// read to be in sync. flush any pending write
+9D000154  3C02BF81   LUI V0, -16511
+9D000158  8C42F000   LW V0, -4096(V0)
+9D00015C  AFC20098   SW V0, 152(S8)
+9D0002B4  3C02BF81   LUI V0, -16511
+9D0002B8  8C42F000   LW V0, -4096(V0)
+9D0002BC  AFC20094   SW V0, 148(S8)
+9D00042C  3C02BF81   LUI V0, -16511
+9D000430  8C42F000   LW V0, -4096(V0)
+9D000434  AFC20090   SW V0, 144(S8)
+189:                 	oscBits.PBDIV=0;
+9D000160  8FC20098   LW V0, 152(S8)
+9D000164  7C02A4C4   INS V0, ZERO, 19, 2
+9D000168  AFC20098   SW V0, 152(S8)
+9D0002C0  8FC20094   LW V0, 148(S8)
+9D0002C4  7C02A4C4   INS V0, ZERO, 19, 2
+9D0002C8  AFC20094   SW V0, 148(S8)
+9D000438  8FC20090   LW V0, 144(S8)
+9D00043C  7C02A4C4   INS V0, ZERO, 19, 2
+9D000440  AFC20090   SW V0, 144(S8)
+190:                 	oscBits.w|=oscPbDiv;	
+9D00016C  8FC30098   LW V1, 152(S8)
+9D000170  8FC20044   LW V0, 68(S8)
+9D000174  00621025   OR V0, V1, V0
+9D000178  AFC20098   SW V0, 152(S8)
+9D0002CC  8FC30094   LW V1, 148(S8)
+9D0002D0  8FC20068   LW V0, 104(S8)
+9D0002D4  00621025   OR V0, V1, V0
+9D0002D8  AFC20094   SW V0, 148(S8)
+9D000444  8FC30090   LW V1, 144(S8)
+9D000448  8FC20088   LW V0, 136(S8)
+9D00044C  00621025   OR V0, V1, V0
+9D000450  AFC20090   SW V0, 144(S8)
+191:                 	OSCCON=oscBits.w;		// write back
+9D00017C  8FC30098   LW V1, 152(S8)
+9D000180  3C02BF81   LUI V0, -16511
+9D000184  AC43F000   SW V1, -4096(V0)
+9D0002DC  8FC30094   LW V1, 148(S8)
+9D0002E0  3C02BF81   LUI V0, -16511
+9D0002E4  AC43F000   SW V1, -4096(V0)
+9D000454  8FC30090   LW V1, 144(S8)
+9D000458  3C02BF81   LUI V0, -16511
+9D00045C  AC43F000   SW V1, -4096(V0)
+192:                 	oscBits.w=OSCCON;		// make sure the write occurred before returning from this function
+9D000188  3C02BF81   LUI V0, -16511
+9D00018C  8C42F000   LW V0, -4096(V0)
+9D000190  AFC20098   SW V0, 152(S8)
+9D0002E8  3C02BF81   LUI V0, -16511
+9D0002EC  8C42F000   LW V0, -4096(V0)
+9D0002F0  AFC20094   SW V0, 148(S8)
+9D000460  3C02BF81   LUI V0, -16511
+9D000464  8C42F000   LW V0, -4096(V0)
+9D000468  AFC20090   SW V0, 144(S8)
+193:                 	
+194:                 	mSYSTEMLock(int_status, dma_status);
+9D000194  3C02BF81   LUI V0, -16511
+9D000198  3C033333   LUI V1, 13107
+9D00019C  34633333   ORI V1, V1, 13107
+9D0001A0  AC43F230   SW V1, -3536(V0)
+9D0001A4  8FC40048   LW A0, 72(S8)
+9D0001A8  0F400468   JAL INTRestoreInterrupts
+9D0001AC  00000000   NOP
+9D0002F4  3C02BF81   LUI V0, -16511
+9D0002F8  3C033333   LUI V1, 13107
+9D0002FC  34633333   ORI V1, V1, 13107
+9D000300  AC43F230   SW V1, -3536(V0)
+9D000304  8FC4006C   LW A0, 108(S8)
+9D000308  0F400468   JAL INTRestoreInterrupts
+9D00030C  00000000   NOP
+9D00046C  3C02BF81   LUI V0, -16511
+9D000470  3C033333   LUI V1, 13107
+9D000474  34633333   ORI V1, V1, 13107
+9D000478  AC43F230   SW V1, -3536(V0)
+9D00047C  8FC4008C   LW A0, 140(S8)
+9D000480  0F400468   JAL INTRestoreInterrupts
+9D000484  00000000   NOP
+195:                 }
+196:                 
+197:                 #define		mOSCSetPBDIV		OSCSetPBDIV		// backward compatibility
+198:                 
+199:                 
+200:                 
+201:                 	/******************************************************************************
+202:                 	 * Available options for config parameter
+203:                 	 *****************************************************************************/
+204:                 		// CPU Peripheral Bus divisor values - values are mutually exclusive
+205:                 		#define OSC_PB_DIV_8    (3 << _OSCCON_PBDIV_POSITION)
+206:                 		#define OSC_PB_DIV_4    (2 << _OSCCON_PBDIV_POSITION)
+207:                 		#define OSC_PB_DIV_2    (1 << _OSCCON_PBDIV_POSITION)
+208:                 		#define OSC_PB_DIV_1    (0 << _OSCCON_PBDIV_POSITION)
+209:                 	/***********************************
+210:                 	 * End config parameter values
+211:                 	 ************************************/
+212:                 
+213:                 
+214:                 /*********************************************************************
+215:                  * Function:    mOSCGetPBDIV()
+216:                  *
+217:                  * Description:	Reads peripheral bus divisor
+218:                  *
+219:                  * PreCondition:None
+220:                  *
+221:                  * Inputs:	  	None
+222:                  *
+223:                  * Output:      None
+224:                  *
+225:                  * Example:	  	mOSCGetPBDIV()
+226:                  *
+227:                  ********************************************************************/
+228:                 #define mOSCGetPBDIV() (OSCCONbits.PBDIV)
+229:                 
+230:                 
+231:                 /*********************************************************************
+232:                  * Function:    mOSCClockFailStatus()
+233:                  *
+234:                  * Description:	Returns Clock Fail status. 1 = clock fail, 0 = no clock fail
+235:                  *
+236:                  * PreCondition: None
+237:                  *
+238:                  * Inputs:	  	None
+239:                  *
+240:                  * Output:      None
+241:                  *
+242:                  * Example:	  	mOSCClockFailStatus()
+243:                  *
+244:                  ********************************************************************/
+245:                 #define mOSCClockFailStatus (OSCCONbits.CF)
+246:                 
+247:                 
+248:                 /*********************************************************************
+249:                  * Function:      	mOSCEnableSOSC()
+250:                  *
+251:                  * Description:	  	Enables the LPRC
+252:                  *
+253:                  * PreCondition:    Interrupts must be disabled and DMA suspended or disabled
+254:                  *
+255:                  * Inputs:	  		None
+256:                  *
+257:                  * Output:        	None
+258:                  *
+259:                  * Example:	  		mOSCEnableSOSC()
+260:                  *
+261:                  ********************************************************************/
+262:                 #define mOSCEnableSOSC() mSysUnlockOpLock(OSCCONSET = _OSCCON_SOSCEN_MASK)
+263:                 
+264:                 
+265:                 /*********************************************************************
+266:                  * Function:      	mOSCDisableSOSC(config)
+267:                  *
+268:                  * Description:	  	Disables SOSC
+269:                  *
+270:                  * PreCondition:    Interrupts must be disabled and DMA suspended or disabled
+271:                  *
+272:                  * Inputs:	  		None
+273:                  *
+274:                  * Output:        	None
+275:                  *
+276:                  * Example:	  		mOSCDisableSOSC()
+277:                  *
+278:                  ********************************************************************/
+279:                 #define mOSCDisableSOSC() mSysUnlockOpLock(OSCCONCLR = _OSCCON_SOSCEN_MASK)
+280:                 
+281:                 
+282:                 
+283:                 #endif
+---  X:/private/cmpe12L/Demo.X/printFunction.s  ---------------------------------------------------------
+                                                  1:     .ent getMessage
+                                                  2:     .text
+                                                  3:     .global getMessage
+                                                  4:     
+                                                  5:     getMessage:
+9D000CF0  3C08A000   LUI T0, -24576               6:     la $t0,raStore
+9D000CF8  AD1F0000   SW RA, 0(T0)                 7:     sw $ra,0($t0)
+                                                  8:     /*push variables onto stack*/
+9D000CFC  23BDFFD8   ADDI SP, SP, -40             9:     addi $sp,$sp,-40
+9D000D00  AFA40000   SW A0, 0(SP)                 10:    sw $a0,0($sp)
+9D000D04  AFA50004   SW A1, 4(SP)                 11:    sw $a1,4($sp)
+9D000D08  AFB00008   SW S0, 8(SP)                 12:    sw $s0,8($sp)
+9D000D0C  AFB1000C   SW S1, 12(SP)                13:    sw $s1,12($sp)
+9D000D10  AFB20010   SW S2, 16(SP)                14:    sw $s2,16($sp)
+9D000D14  AFB30014   SW S3, 20(SP)                15:    sw $s3,20($sp)
+9D000D18  AFB40018   SW S4, 24(SP)                16:    sw $s4,24($sp)
+9D000D1C  22B500EB   ADDI S5, S5, 235             17:    addi $s5,$s5,235
+9D000D20  AFB5001C   SW S5, 28(SP)                18:    sw $s5,28($sp)
+9D000D24  AFB60020   SW S6, 32(SP)                19:    sw $s6,32($sp)
+9D000D28  AFB70024   SW S7, 36(SP)                20:    sw $s7,36($sp)
+                                                  21:    
+                                                  22:    
+                                                  23:    /*print strings */
+9D000D2C  32B50000   ANDI S5, S5, 0               24:    andi $s5,$s5,0
+9D000D30  3C04A000   LUI A0, -24576               25:    la $a0, myStr
+9D000D38  0F4003FC   JAL 0x9D000FF0               26:    jal puts
+                                                  27:    /*la $a0, myStr2
+                                                  28:    li $a1, 5
+                                                  29:    jal printf*/
+9D000D40  00000000   NOP                          30:    nop
+                                                  31:    
+                                                  32:    /*restore $a1 and $a0 and $ra*/
+9D000D44  8FA40000   LW A0, 0(SP)                 33:    lw $a0,0($sp)
+9D000D48  8FA50004   LW A1, 4(SP)                 34:    lw $a1,4($sp)
+9D000D4C  8FB00008   LW S0, 8(SP)                 35:    lw $s0,8($sp)
+9D000D50  8FB1000C   LW S1, 12(SP)                36:    lw $s1,12($sp)
+9D000D54  8FB20010   LW S2, 16(SP)                37:    lw $s2,16($sp)
+9D000D58  8FB30014   LW S3, 20(SP)                38:    lw $s3,20($sp)
+9D000D5C  8FB40018   LW S4, 24(SP)                39:    lw $s4,24($sp)
+9D000D60  8FB5001C   LW S5, 28(SP)                40:    lw $s5,28($sp)
+9D000D64  8FB60020   LW S6, 32(SP)                41:    lw $s6,32($sp)
+9D000D68  8FB70024   LW S7, 36(SP)                42:    lw $s7,36($sp)
+9D000D6C  23BD0028   ADDI SP, SP, 40              43:    addi $sp,$sp,40
+9D000D70  3C08A000   LUI T0, -24576               44:    la $t0,raStore
+9D000D78  8D1F0000   LW RA, 0(T0)                 45:    lw $ra,0($t0)
+                                                  46:    .end getMessage
+                                                  47:    .data
+                                                  48:    myStr: .asciiz "Hello, world!\n"
+                                                  49:    myStr2: .asciiz "Hello, world! %d"
+                                                  50:    raStore: .word 0
+---  X:/private/cmpe12L/Demo.X/lab5.s  ------------------------------------------------------------------
+                                                  1:     .ent getDelay
+                                                  2:     .text
+                                                  3:     .global getDelay
+                                                  4:     
+                                                  5:     getDelay:
+9D001204  30420000   ANDI V0, V0, 0               6:     andi $v0,$v0,0
+9D001208  3C010008   LUI AT, 8                    7:     add $v0,$v0,0x80000
+                                                  8:     
+                                                  9:     .end getDelay
+                                                  10:    .data
+                                                  11:    
+                                                  12:    /* any global data here */

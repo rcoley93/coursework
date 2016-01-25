@@ -18,10 +18,17 @@ rm filename - deletes a file on the server
 
 ###Files
 Makefile
+
 protocol.cpp
+
 protocol.h
+
 sockets.cpp
+
 sockets.h
+
 logstream.h
+
 cixd.cpp
+
 cix.cpp

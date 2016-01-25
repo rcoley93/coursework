@@ -1,0 +1,11 @@
+Ryan Coley
+rjcoley
+pa2
+README
+Lists all the files for pa2
+
+README - lists all the files for pa2
+Lex.c - sorts a set of words from a document then arranges them lexographically then saves it in a new file
+List.c - doubly linked list data structure that stores integers as the data
+List.h - defines all of the components needed for List.c
+ListClient - a test for the List.c data structure

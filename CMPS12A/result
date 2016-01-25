@@ -1,0 +1,21 @@
+/afs/cats.ucsc.edu/users/y/rjcoley/CMPS12A/lab2
+
+Access list for public is
+Normal rights:
+  system:operator rlidwk
+  system:authuser rlid
+  system:anyuser rl
+  rjcoley rlidwka
+
+Access list for private is
+Normal rights:
+  rjcoley rlidwka
+
+total 7
+-rw-r--r--. 1 rjcoley users  443 Apr 10 23:03 HelloWorld.class
+-rwxr-xr-x. 1 rjcoley users  194 Apr 10 23:03 lab2
+drwxr-xr-x. 2 rjcoley users 2048 Apr 10 23:14 private
+drwxr-xr-x. 2 rjcoley users 2048 Apr 10 22:55 public
+-rw-r--r--. 1 rjcoley users  238 Apr 10 23:17 result
+
+Hello, my name is Ryan Coley.

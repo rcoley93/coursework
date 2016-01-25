@@ -1,0 +1,115 @@
+r Desolate Island somewhere in the Carribbean
+d Suddenly you wake up and realize that you're not at the party
+d anymore and start to think of what you did last night,
+d but you don't remember anything from the previous night.
+d You realize that you are on an island out in the middle of
+d the ocean and wonder whats on the island. What do you do?
+o Go Search the Island for Civilization
+t Jungle
+o Make and HELP sign on the ground so that way people in the air can see you.
+t Beach
+o Go find food from the ocean cause you are hungry.
+t Ocean
+
+r Jungle
+d So you go to the jungle to see if there is anyone on this
+d island. You notice that there is something weird here.
+d You can't tell what it is but it makes you curious.
+d What is the next step in your adventure on this island?
+o Go make the HELP sign on the beach.
+t Beach
+o Go deeper into the jungle to figure out what the mystery is.
+t Deep Jungle
+o Go find food in the Ocean
+t Ocean
+
+r Beach
+d So you make it to the beach and make the HELP sign hoping
+d that someone will see it. What do you do next?
+o Check to see if there's civilation on this island.
+t Jungle
+o Go find some food since the ocean is right there.
+t Ocean
+
+r Ocean
+d You try and try and try and finally you catch a fish to eat.
+d It was delicious. You now relize that that was too hard to do
+d again so you decide to do something else. What is it?
+o Go to the beach to make the HELP sign. 
+t Beach
+o Go find if there's civilization on the island.
+t Jungle
+
+r Deep Jungle
+d You make your way deeper and deeper into the jungle. All
+d of a sudden you see this bright light coming from an orb.
+d In an onimous voice  it says, "You are the choosen one!"  
+d You wonder what that means? What do you say to the orb?
+o Why am I here?
+t Response 1
+o How do I get home?
+t Response 2
+o How am I the choosen one?
+t Response 3
+
+r Response 1
+d The magical orb replies, "Because you have been choosen to 
+d save mankind!" The mystical orb has spoken. A portal has opened.
+d You are now in a dilemma. Do you ask more questions? Or do you
+d Jump into the portal to find out where to go?
+o Jump into the portal.
+t Portal
+o Run Away from the magical orb
+t Jungle 2
+o Ask, "How do I get home?"
+t Response 2
+o Ask, "How am I the choosen one?"
+t Response 3
+
+r Response 2
+d The magical orb replies, "You can go home once you have done what I 
+d have asked! You must save mankind!" The portal opens but you ponder
+d what can be done. What do you have in mind?
+o Jump into the portal
+t Portal
+o Run Away from the magical orb
+t Jungle 2
+o Ask, "How am I the choosen one?"
+t Response 3
+o Ask, "Why am I here?"
+t Response 1
+
+r Response 3
+d The magical orb replies, "You were choosen because you have qualities
+d that no one else possess." That made you feel like you're important!
+d Just then a portal opens. What do you do next?
+o Jump into the portal
+t Portal
+o Run Away from the magical orb
+t Jungle 2
+o Ask, "Why am I here?"
+t Response 1
+o Ask, "How do I get home?"
+t Response 2
+
+r Portal
+d As your falling through the portal you begin to questions
+d how real this can really be. How are you the choosen one? 
+d How did you get here? How did this happen? And then it hits 
+d you! It's not! You come out of the portal and wake up!
+d You just blacked out from drinking too much, but 
+d surprisingly you don't have a hangover!
+d You Win! The End!
+o Start again?
+t Jungle
+
+r Jungle 2
+d You are scared for your life so you decide to run away
+d from the weir orb that says you're the choosen one! But wait!
+d The orb senses your cowardice and shoot you with a bolt of
+d lightning! You wake up and realize that you just blacked out
+d from drinking too much, and with that you wake up with a terrible
+d hangover.
+d You Lose! The End!
+o Start again?
+t Jungle
