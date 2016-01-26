@@ -1,0 +1,5 @@
+#!/bin/bash
+g++ -c -std=c++11 main.cpp
+g++ -o  Category_Tree main.o -std=c++11
+rm main.o
+

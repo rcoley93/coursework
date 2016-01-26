@@ -1,0 +1,201 @@
+REVISION TABLE
+
+-holds metadata for ever edit done to a page
+
+-every edit creates a new row
+
+-has info like user that made the edit, time of edit, reference to the new wikitext in the text table
+
+-import of last revision creates two rows
+	-one with date and wikitext of imported and one with import date
+		-wikitext, if article alread exists, is the most recent version
+
+-similar to recentchanges table
+
+-used for page history and user contributions
+
+-recentchanges table used for recent changes, related changes, watchlists, and in case of page creation, list of new pages
+
+-differences
+	-recentchanges records logged events
+	-items in recentchanges table are periodicall purged; revision table are kept longer/forever
+	-import of a page revision add both entry to the revision table with import and original date
+
+-deleted revisions moved to archive
+
+FIELDS
+
+-rev_id = primary key for each revision
+	-page_latest is a foreign key to field
+
+-rev_page =  reference to the page to which the revision is relevent to
+	-number is equal to the page_id of said page
+	-should never be invalid
+		-revision wont show up in page history otherwise
+	-if page.page_latest links to a revision with invalid rev_page then DNE error
+	
+-rev_text_id = foreign key to old_id in text table
+	-possible for multiple revisions to use same text
+		-ex only metadata is changed or rollback done to a prev version
+	
+-rev_comment = holds editors edit summary
+	-shown in history and contributions
+	-rendered in a saqnitized subset of wiki markup
+	
+-rev_user = equal to user_id of user who made edit
+	-0 for anon, init scripts, and some mass imports
+	
+-rev_user_text = editors username or ip address if anon
+	-anon revisions imported from UseWikiMod or early incarnations of Phase 2 software ma contain ip
+		-final octect obsured eg 24.150.61.xxx
+		-may contain a reverse DNS lookup hostname eg office.bomis.com
+		
+-rev_timestamp = timestamp of edit
+
+-rev_minor_edit = records whether the user marked minor edit check bos
+	-1 true, 0 false
+	-many auto edits are minor
+	
+-rev_deleted = reserved for RevisionDelete System
+		-bitfield
+			-DELETED_TEXT = 1, DELETED_COMMENT = 2, DELETED_USER = 4, DELETED_RESTRICTED = 8, nothing = 0
+			-ex if user and comment deleted value is 61
+			
+-rev_len >=1.10 = length of article after revision
+	-in bytes
+	-used in history pages
+	-corresponds to re_new_len
+	
+-rev_parent_id >=1.10 = rev_id of prev rev of page
+	-corresponds to rc_last_oldid
+	-edits which are new page creations val = 0
+	
+-rev_sha1 >=1.19 = used to add SHA-1 text content hash in base 36
+	-generated n wfBaseConvert()
+	
+-rev_content_model >=1.21 = content model
+	-ids will be exposed in api & xml dumps
+	-extentions should take care to avoid conflict
+		-use extention name as prefix eg mextention-somecontent
+		
+-rev_content_format >=1.21 = content format
+	-MIME types
+	-will be exposed in api/xml dumps
+	-extentions free to use provided formats or define own
+	-recommended to use MIME types conventions eg "text/javascript"
+	
+SCHEMA SUMMARY
+
+>=1.21
+
++--------------------+---------------------+------+-----+----------------+----------------+
+| Field              | Type                | Null | Key | Default        | Extra          |
++--------------------+---------------------+------+-----+----------------+----------------+
+| rev_id             | int(10) unsigned    | NO   | PRI | NULL           | auto_increment |
+| rev_page           | int(10) unsigned    | NO   | MUL | NULL           |                |
+| rev_text_id        | int(10) unsigned    | NO   |     | NULL           |                |
+| rev_comment        | tinyblob            | NO   |     | NULL           |                |
+| rev_user           | int(10) unsigned    | NO   | MUL | 0              |                |
+| rev_user_text      | varbinary(255)      | NO   | MUL |                |                |
+| rev_timestamp      | binary(14)          | NO   | MUL |                |                |
+| rev_minor_edit     | tinyint(3) unsigned | NO   |     | 0              |                |
+| rev_deleted        | tinyint(3) unsigned | NO   |     | 0              |                |
+| rev_len            | int(10) unsigned    | YES  |     | NULL           |                |
+| rev_parent_id      | int(10) unsigned    | YES  |     | NULL           |                |
+| rev_sha1           | varbinary(32)       | NO   |     |                |                |
+| rev_content_model  | varbinary(32)       | YES  |     | NULL           |                |
+| rev_content_format | varbinary(64)       | YES  |     | NULL           |                |
++--------------------+---------------------+------+-----+----------------+----------------+
+
+1.19
+
++----------------+---------------------+------+-----+---------+----------------+
+| Field          | Type                | Null | Key | Default | Extra          |
++----------------+---------------------+------+-----+---------+----------------+
+| rev_id         | int(8) unsigned     | NO   | PRI | NULL    | auto_increment |
+| rev_page       | int(8) unsigned     | NO   | PRI | NULL    |                |
+| rev_text_id    | int(8) unsigned     | NO   |     | NULL    |                |
+| rev_comment    | tinyblob            | NO   |     | NULL    |                |
+| rev_user       | int(5) unsigned     | NO   | MUL | 0       |                |
+| rev_user_text  | varbinary(255)      | NO   | MUL | NULL    |                |
+| rev_timestamp  | binary(14)          | NO   | MUL | NULL    |                |
+| rev_minor_edit | tinyint(1) unsigned | NO   |     | 0       |                |
+| rev_deleted    | tinyint(1) unsigned | NO   |     | 0       |                |
+| rev_len        | int(8) unsigned     | YES  |     | NULL    |                |
+| rev_parent_id  | int(8) unsigned     | YES  |     | NULL    |                |
+| rev_sha1       | varbinary(32)       | NO   |     | NULL    |                | 
++----------------+---------------------+------+-----+---------+----------------+
+
+1.18
+
++----------------+---------------------+------+-----+---------+----------------+
+| Field          | Type                | Null | Key | Default | Extra          |
++----------------+---------------------+------+-----+---------+----------------+
+| rev_id         | int(8) unsigned     | NO   | PRI | NULL    | auto_increment |
+| rev_page       | int(8) unsigned     | NO   | PRI | NULL    |                |
+| rev_text_id    | int(8) unsigned     | NO   |     | NULL    |                |
+| rev_comment    | tinyblob            | NO   |     | NULL    |                |
+| rev_user       | int(5) unsigned     | NO   | MUL | 0       |                |
+| rev_user_text  | varbinary(255)      | NO   | MUL | NULL    |                |
+| rev_timestamp  | binary(14)          | NO   | MUL | NULL    |                |
+| rev_minor_edit | tinyint(1) unsigned | NO   |     | 0       |                |
+| rev_deleted    | tinyint(1) unsigned | NO   |     | 0       |                |
+| rev_len        | int(8) unsigned     | YES  |     | NULL    |                |
+| rev_parent_id  | int(8) unsigned     | YES  |     | NULL    |                |
++----------------+---------------------+------+-----+---------+----------------+
+
+1.10-1.11
+
++----------------+---------------------+------+-----+---------+----------------+
+| Field          | Type                | Null | Key | Default | Extra          |
++----------------+---------------------+------+-----+---------+----------------+
+| rev_id         | int(8) unsigned     | NO   | PRI | NULL    | auto_increment |
+| rev_page       | int(8) unsigned     | NO   | PRI | NULL    |                |
+| rev_text_id    | int(8) unsigned     | NO   |     | NULL    |                |
+| rev_comment    | tinyblob            | NO   |     | NULL    |                |
+| rev_user       | int(5) unsigned     | NO   | MUL | 0       |                |
+| rev_user_text  | varchar(255)        | NO   | MUL | NULL    |                |
+| rev_timestamp  | char(14)            | NO   | MUL | NULL    |                |
+| rev_minor_edit | tinyint(1) unsigned | NO   |     | 0       |                |
+| rev_deleted    | tinyint(1) unsigned | NO   |     | 0       |                |
+| rev_len        | int(8) unsigned     | YES  |     | NULL    |                |
+| rev_parent_id  | int(8) unsigned     | YES  |     | NULL    |                |
++----------------+---------------------+------+-----+---------+----------------+
+
+<=1.9
+
++----------------+---------------------+------+-----+---------+----------------+
+| Field          | Type                | Null | Key | Default | Extra          |
++----------------+---------------------+------+-----+---------+----------------+
+| rev_id         | int(8) unsigned     | NO   | PRI | NULL    | auto_increment |
+| rev_page       | int(8) unsigned     | NO   | PRI | NULL    |                |
+| rev_text_id    | int(8) unsigned     | NO   |     | NULL    |                |
+| rev_comment    | tinyblob            | NO   |     | NULL    |                |
+| rev_user       | int(5) unsigned     | NO   | MUL | 0       |                |
+| rev_user_text  | varchar(255)        | NO   | MUL | NULL    |                |
+| rev_timestamp  | char(14)            | NO   | MUL | NULL    |                |
+| rev_minor_edit | tinyint(1) unsigned | NO   |     | 0       |                |
+| rev_deleted    | tinyint(1) unsigned | NO   |     | 0       |                |
++----------------+---------------------+------+-----+---------+----------------+
+
+INDICES
+
+>=1.20
+
++----------+------------+---------------------+--------------+---------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table    | Non_unique | Key_name            | Seq_in_index | Column_name   | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++----------+------------+---------------------+--------------+---------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| revision |          0 | PRIMARY             |            1 | rev_id        | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          0 | rev_page_id         |            1 | rev_page      | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          0 | rev_page_id         |            2 | rev_id        | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          1 | rev_timestamp       |            1 | rev_timestamp | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          1 | page_timestamp      |            1 | rev_page      | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          1 | page_timestamp      |            2 | rev_timestamp | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          1 | user_timestamp      |            1 | rev_user      | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          1 | user_timestamp      |            2 | rev_timestamp | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          1 | usertext_timestamp  |            1 | rev_user_text | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          1 | usertext_timestamp  |            2 | rev_timestamp | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          1 | page_user_timestamp |            1 | rev_page      | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          1 | page_user_timestamp |            2 | rev_user      | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
+| revision |          1 | page_user_timestamp |            3 | rev_timestamp | A         |           1 |     NULL | NULL   |      | BTREE      |         |               |
++----------+------------+---------------------+--------------+---------------+-----------+-------------+----------+--------+------+------------+---------+---------------+

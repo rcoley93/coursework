@@ -1,0 +1,9 @@
+#!/bin/bash
+g++ -c -std=c++11 New_Categories.cpp
+g++ -c -std=c++11 main.cpp
+g++ -o  New_Categories New_Categories.o -std=c++11
+g++ -o  Main main.o -std=c++11
+rm New_Categories.o main.o
+chmod 777 New_Categories
+chmod 777 Main
+

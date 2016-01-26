@@ -1,0 +1,40 @@
+TEXT TABLE
+
+-holds rhe wikitext of individual page revisions
+
+-if Postgres or Oracle db then called pagecontent
+
+-fieldnames are a holdover from old revisions table <=1.4
+
+FIELDS
+
+-old_id = revision.rev_text_id in revision table
+	-key to this column
+
+-old_text = wikitext of the page
+
+-old flags = comma separated list of flags
+	-gzip = text is compressed with PHP gzdeflate
+	-utf-8 = text was stored as UTF-8
+	-object = text contains a serialized PHP object
+	-external = text stored in an external location specified by old_text
+	
+SCHEMA
+
+1.19
++-----------+------------------+------+-----+---------+----------------+
+| Field     | Type             | Null | Key | Default | Extra          |
++-----------+------------------+------+-----+---------+----------------+
+| old_id    | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| old_text  | mediumblob       | NO   |     | NULL    |                |
+| old_flags | tinyblob         | NO   |     | NULL    |                |
++-----------+------------------+------+-----+---------+----------------+
+
+1.8-1.9
++-----------+-----------------+------+-----+---------+----------------+
+| Field     | Type            | Null | Key | Default | Extra          |
++-----------+-----------------+------+-----+---------+----------------+
+| old_id    | int(8) unsigned | NO   | PRI | NULL    | auto_increment |
+| old_text  | mediumblob      | NO   |     | NULL    |                |
+| old_flags | tinyblob        | NO   |     | NULL    |                |
++-----------+-----------------+------+-----+---------+----------------+

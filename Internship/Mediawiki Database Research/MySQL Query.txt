@@ -1,0 +1,17 @@
+MySql query for getting the text of a page starting with a known article title
+
+Using 3 separate queries
+//first get the page id from the page table
+SELECT page_id FROM page WHERE page_title="INSERT TITLE HERE"
+
+//get the latest revision of the text from the revision table
+SELECT rev_text_id FROM revision WHERE rev_page=page_id
+
+//get the text from the text table
+SELECT old_text FROM text WHERE old_id=rev_text_id
+
+Using 1 query
+SELECT text.old_text FROM text
+INNER JOIN revision ON text.old_id=revision.rev_text_id
+INNER JOIN page ON revision.rev_id=page.page_latest
+WHERE page_title="INSERT TITLE HERE"
